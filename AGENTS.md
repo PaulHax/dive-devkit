@@ -14,15 +14,6 @@ dive-devkit/tools/down.sh <wt> [--remove-worktree]
 ```
 Everything below is the manual breakdown.
 
-## New worktree
-```bash
-cd dive
-git fetch origin
-git worktree add -b <wt> ./<wt> origin/main       # new branch off main
-# or existing fork branch:  git worktree add ./<wt> mine/<branch>
-# remove:  git worktree remove --force ./<wt> && git branch -D <wt> && git worktree prune
-```
-
 ## Provision (per worktree, one-time)
 ```bash
 cd dive/<wt>/server && uv sync --group dev        # ~555M .venv, <2s warm cache
@@ -47,13 +38,10 @@ The manual breakdown of each suite:
 # server unit
 cd dive/<wt>/server && uv run tox -e testunit
 uv run tox -e lint ; uv run tox -e type ; uv run tox -e format   # not in CI
-uv run tox -e testunit -- tests/test_update_metadata.py          # one file
-uv run tox -e testunit -- -k test_update_metadata                # by keyword
 
 # client unit (23 specs)
 cd dive/<wt>/client && npm test
 npm run lint ; npm run lint:templates
-node_modules/.bin/vitest run platform/desktop/backend/native/common.spec.ts   # one spec
 ./checkbuild.sh                                                   # lint+test+build gate
 
 # server integration — mutates local Girder; downloads private fixtures from viame.kitware.com
@@ -159,18 +147,9 @@ npm run build:electron -- --linux AppImage        # CI gate
 ## Gotchas
 - **8080 = dive-dsa**, never use. Client serve AND electron renderer both default to 8080 → always pass `VITE_PORT=3000` (electron auto-falls back to 8081).
 - **`.env.default` sets `COMPOSE_PROJECT_NAME=dive`** → every worktree using a fresh copy shares project `dive` (containers `dive-*`, volumes `dive_*`), so stacks are NOT per-worktree. Set unique `COMPOSE_PROJECT_NAME=<wt>` in `.env` (what `up.sh` does) for isolation.
-- **Docker writes ROOT-OWNED files into bind-mounted `./server`** (`__pycache__`, `dive_server/dive_client`) → breaks `git worktree remove`/`rm`. Down the stack first; if a dir is stuck (host sudo needs a password here): `docker run --rm -v <abs>/dive:/work redis:latest rm -rf /work/<wt>` (this is what `down.sh --remove-worktree` does, and what left the stale `dataset-info-panel` stubs).
+- **Docker writes ROOT-OWNED files into bind-mounted `./server`** (`__pycache__`, `dive_server/dive_client`) → breaks `git worktree remove`/`rm`. Down the stack first; if a dir is stuck (host sudo needs a password here): `docker run --rm -v <abs>/dive:/work redis:latest rm -rf /work/<wt>` (this is what `down.sh --remove-worktree` does).
 - **uv**: always `uv run tox` (no global tox/pipx); needs `uv sync --group dev` first. The pyenv `VIRTUAL_ENV` warning is harmless.
 - **One stack at a time**: `docker rm -f traefik autoheal` before switching worktree stacks.
 - **Version drift**: local node 22 vs `.nvmrc`/CI 24.15.0; local py 3.10 vs CI/container 3.11. Tests pass locally; match CI for builds.
 - `.venv` / `.tox` / `node_modules` / `dist*` / `site` / `.env` are gitignored (in DIVE); `data/` + sidecars gitignored (in this kit).
 - **Seed media is public/shareable — never commit bytes or a `GIRDER_API_KEY`.** The DIVE integration-test fixtures (alice/bobby/kwcoco) are **private** (403 for non-internal accounts) — not used. **Don't share a live Mongo across worktrees** (branch migration drift corrupts it); seed each worktree's own DB.
-
-## Validated end-to-end (2026-06-18 → 2026-06-19)
-Fresh worktrees off `origin/main`, exercised, then fully removed:
-- `git worktree add` · `uv sync --group dev` (1.2s) · `npm ci` → OK
-- `uv run tox -e testunit` → 80 passed · `npm test` → 217 passed / 23 files
-- `docker compose --profile cpu up -d` → Girder 5.0.4 at :8010 · `electron-vite build` + `serve:electron` → OK
-- seeder: NOAA video `annotate=True`, VIAME image set `tracks=992/992 OK`, SEFSC video `tracks=24/24` (real annotated video, anon export); idempotent re-run → `exists`
-- bug found+fixed: image-sequence postprocess needs `skipJobs=False`
-- teardown via container-rm of root-owned files → clean
