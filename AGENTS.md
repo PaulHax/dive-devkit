@@ -125,8 +125,6 @@ npm run build:electron -- --linux AppImage        # CI gate
 - **8080 = dive-dsa**, never use. Client serve AND electron renderer both default to 8080 → always pass `VITE_PORT=3000` (electron auto-falls back to 8081).
 - **`.env.default` sets `COMPOSE_PROJECT_NAME=dive`** → every worktree using a fresh copy shares project `dive` (containers `dive-*`, volumes `dive_*`), so stacks are NOT per-worktree. Set unique `COMPOSE_PROJECT_NAME=<wt>` in `.env` (what `up.sh` does) for isolation.
 - **Docker writes ROOT-OWNED files into bind-mounted `./server`** (`__pycache__`, `dive_server/dive_client`) → breaks `git worktree remove`/`rm`. Down the stack first; if a dir is stuck (host sudo needs a password here): `docker run --rm -v <abs>/dive:/work redis:latest rm -rf /work/<wt>` (this is what `down.sh --remove-worktree` does).
-- **uv**: always `uv run tox` (no global tox/pipx); needs `uv sync --group dev` first. The pyenv `VIRTUAL_ENV` warning is harmless.
-- **One stack at a time**: `docker rm -f traefik autoheal` before switching worktree stacks.
-- **Version drift**: local node 22 vs `.nvmrc`/CI 24.15.0; local py 3.10 vs CI/container 3.11. Tests pass locally; match CI for builds.
-- `.venv` / `.tox` / `node_modules` / `dist*` / `site` / `.env` are gitignored (in DIVE); `data/` + sidecars gitignored (in this kit).
+- **uv**: always `uv run tox` (no global tox/pipx); needs `uv sync --group dev` first.
+- **Version drift**: tests pass on older local toolchains, but builds need `.nvmrc` node and py3.11.
 - **Seed media is public/shareable — never commit bytes or a `GIRDER_API_KEY`.** The DIVE integration-test fixtures (alice/bobby/kwcoco) are **private** (403 for non-internal accounts) — not used. **Don't share a live Mongo across worktrees** (branch migration drift corrupts it); seed each worktree's own DB.
