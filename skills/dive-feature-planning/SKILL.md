@@ -23,7 +23,7 @@ miss.
 
 | Surface | Read when the feature touches | File |
 |---|---|---|
-| Ingestion | any new file kind, classification, or discovery mechanism | [ingestion.md](references/ingestion.md) |
+| Ingestion | any new file kind, classification, or discovery mechanism — not new fields inside an already-classified format | [ingestion.md](references/ingestion.md) |
 | Platform parity | anything with both a server and a desktop story | [parity-seams.md](references/parity-seams.md) |
 | Media types, clone, export | media handling, clones, multicam, what round-trips | [media-clone-export.md](references/media-clone-export.md) |
 | Conventions & gates | new filenames/formats, or any "is it tested?" question | [conventions-and-gates.md](references/conventions-and-gates.md) |
