@@ -82,9 +82,3 @@ The seeder is idempotent and verifies `expectedTrackCount` and `expectedFrameMet
 (non-zero exit on mismatch).
 
 See [AGENTS.md](AGENTS.md) for the full worktree/test/docker/electron runbook and gotchas.
-
-## License
-
-MIT — see [LICENSE](LICENSE). The kit ships no media. The one source clip it fetches at runtime is
-NOAA Okeanos Explorer footage released under **CC0 1.0** (public domain); everything the generators
-build on top of it is invented here and covered by the MIT grant.
