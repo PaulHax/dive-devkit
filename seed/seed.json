@@ -159,6 +159,37 @@
           ]
         }
       }
+    },
+    {
+      "name": "SEFSC-SEAMAP fish taxonomy",
+      "type": "video",
+      "fps": 5.0,
+      "generate": "sefsc-seamap",
+      "expectedTrackCount": 24,
+      "expectedTypeHierarchy": {
+        "chaetodon_sedentarius": "chaetodon",
+        "epinephelus_morio": "epinephelus",
+        "holacanthus_bermudensis": "holacanthus",
+        "mycteroperca_phenax": "mycteroperca",
+        "seriola": "carangidae",
+        "seriola_rivoliana": "seriola"
+      },
+      "media": [
+        {
+          "root": "generated",
+          "path": "sefsc-seamap/SEFSC-SEAMAP-761901231-Cam2.mp4"
+        }
+      ],
+      "data": [
+        {
+          "root": "generated",
+          "path": "sefsc-seamap/annotations.viame.csv"
+        },
+        {
+          "root": "generated",
+          "path": "sefsc-seamap/config.json"
+        }
+      ]
     }
   ]
 }

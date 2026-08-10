@@ -1,0 +1,11 @@
+{
+  "_comment": "The same taxonomy in the annotation vocabulary of the FishTrack23 SEFSC clip, so it can be dropped straight into that dataset's config as typeHierarchy.",
+  "typeHierarchy": {
+    "chaetodon_sedentarius": "chaetodon",
+    "epinephelus_morio": "epinephelus",
+    "holacanthus_bermudensis": "holacanthus",
+    "mycteroperca_phenax": "mycteroperca",
+    "seriola": "carangidae",
+    "seriola_rivoliana": "seriola"
+  }
+}

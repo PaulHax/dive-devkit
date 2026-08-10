@@ -27,6 +27,7 @@ from girder_client import GirderClient
 
 import gen_hierarchy_scenarios
 import okeanos_media
+import sefsc_seamap
 
 KIT = Path(__file__).resolve().parents[1]
 DEFAULT_MANIFEST = KIT / "seed" / "seed.json"
@@ -126,6 +127,8 @@ def generate_multicam_frame_metadata_fixture() -> None:
 
 
 def ensure_generated_fixture(entry: dict) -> None:
+    if entry.get("generate") == "sefsc-seamap":
+        sefsc_seamap.generate()
     if entry.get("generate") == "okeanos-media":
         okeanos_media.generate()
     if entry.get("generate") == "multicam-frame-metadata":

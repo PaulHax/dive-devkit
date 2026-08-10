@@ -61,11 +61,22 @@ failure. Default runs server unit/lint/type plus client unit/lint/builds. Flags:
 | NOAA Okeanos frame metadata sequence | image-sequence + frame metadata | `okeanos-media` |
 | Hierarchical classification (multipair, cycle, not-an-object) | image-sequence + tracks + type hierarchy | `hierarchical-classification` |
 | Synthetic multicam frame metadata | stereo image-sequence + per-camera/shared frame metadata | `multicam-frame-metadata` |
+| SEFSC-SEAMAP fish taxonomy | video + 24 real tracks + 147-class type hierarchy | `sefsc-seamap` |
 
-All footage comes from one clip: **NOAA Okeanos Explorer EX1402 dive 11, CC0 1.0 (public domain)**,
-fetched once from Wikimedia Commons. Annotations, type hierarchies, and frame-metadata columns are
-invented by the generators. The multicam fixture draws its own PNGs with the standard library and
-needs no network at all.
+Most footage comes from one clip: **NOAA Okeanos Explorer EX1402 dive 11, CC0 1.0 (public
+domain)**, fetched once from Wikimedia Commons; annotations and frame-metadata columns on top of it
+are invented. The multicam fixture draws its own PNGs with the standard library and needs no
+network at all.
+
+The SEFSC entry is the exception and the only one with real annotations:
+
+> SEFSC-SEAMAP-761901231-Cam2, FishTrack23 ensemble dataset (Kitware / NOAA SEFSC), **CC-BY-4.0**.
+> Dawkins et al., "FishTrack23: An Ensemble Underwater Dataset for Multi-Object Tracking",
+> WACV 2024, pp. 7167–7176.
+
+Its type hierarchy is real too, derived from the public VIAME SEFSC-SEAMAP model's class list and
+checked in as `seed/seamap-taxonomy.json` (147 classes) — see
+[tools/derive_seamap_taxonomy.py](tools/derive_seamap_taxonomy.py) to refresh it.
 
 The seeder is idempotent and verifies `expectedTrackCount` and `expectedFrameMetadataSources`
 (non-zero exit on mismatch).

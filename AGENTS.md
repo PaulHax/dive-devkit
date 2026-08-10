@@ -106,6 +106,23 @@ Every seed entry names one in `"generate"`, and all paths are `{"root": "generat
   clip via `okeanos_media`, and writes made-up multipair tracks plus one hierarchy payload per
   branch of the normalizer (valid forest + 6 malformed).
 - `multicam-frame-metadata` — synthetic PNGs written with the stdlib (`write_png`), no network.
+- `sefsc-seamap` — `tools/sefsc_seamap.py`. The only entry with **real annotations**: fetches the
+  FishTrack23 SEFSC clip (24 tracks / 983 detections / 8 species, CC-BY-4.0) from the public
+  collection, exports its annotations via `dive_annotation/export` (DIVE stores them as documents,
+  not files, so they are not in the folder listing), and writes a `config.json` carrying the real
+  type hierarchy.
+
+### Type hierarchy is static data, not generated
+`seed/seamap-taxonomy.json` (147 classes) and `seed/sefsc-seamap-hierarchy.json` are checked in.
+They are derived from the public VIAME SEFSC-SEAMAP add-on by `tools/derive_seamap_taxonomy.py`,
+which range-reads a 120 KB `train_info.json` out of a 2.4 GB archive without downloading it. Run
+that by hand only when the add-on is republished — **the seeder never calls it**, so seeding stays
+off that endpoint.
+
+Parents come from the taxonomic codes in the class labels (genus zeroes the last two digits, family
+the last four). Do not widen that: zeroing five digits crosses a level boundary and produced false
+parents such as `BODIANUSPULCHELLUS -> SCIAENIDAE`, a wrasse under a drum family. The model's own
+class graph ships with every edge list empty, so there is no upstream hierarchy to copy.
 
 **Anything new must generate its own data.** The kit takes no dependency on a sibling media library,
 so third-party media it cannot fabricate (VIAME, SEFSC) is out of scope — point those at a live
