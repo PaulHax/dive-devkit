@@ -1,0 +1,6 @@
+interface:
+  display_name: "DIVE Feature Planning"
+  short_description: "Plan high-risk DIVE features thoroughly"
+  default_prompt: "Use $dive-feature-planning to evaluate and harden this DIVE feature plan."
+policy:
+  allow_implicit_invocation: true

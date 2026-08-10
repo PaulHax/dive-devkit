@@ -1,0 +1,6 @@
+# per-stack seed output
+seed/seeded-local.json
+.generated/
+# python
+__pycache__/
+*.pyc

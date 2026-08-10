@@ -1,0 +1,164 @@
+{
+  "_comment": "Datasets to seed into a local DIVE stack for a consistent test surface. Every entry builds its own media under .generated/ (DIVE_DEVKIT_GENERATED) via its \"generate\" script -- the kit reads no external media library. Seed with tools/seed_datasets.py.",
+  "datasets": [
+    {
+      "name": "NOAA Okeanos fish video",
+      "type": "video",
+      "fps": 23.976023976023978,
+      "generate": "okeanos-media",
+      "media": [
+        {
+          "root": "generated",
+          "path": "okeanos/video/ex1402-dive11-fish.webm"
+        }
+      ]
+    },
+    {
+      "name": "NOAA Okeanos frame metadata sequence",
+      "type": "image-sequence",
+      "fps": 1,
+      "expectedFrameMetadataSources": 1,
+      "media": [
+        {
+          "root": "generated",
+          "path": "okeanos/frame-metadata-sequence"
+        }
+      ],
+      "frameMetadata": [
+        {
+          "root": "generated",
+          "path": "okeanos/frame-metadata/frame_metadata.csv"
+        }
+      ],
+      "generate": "okeanos-media"
+    },
+    {
+      "name": "Hierarchical classification multipair",
+      "type": "image-sequence",
+      "fps": 1,
+      "expectedTrackCount": 3,
+      "expectedTypeHierarchy": {
+        "juvenile-red-snapper": "red-snapper",
+        "red-snapper": "fish",
+        "bluefin-tuna": "tuna",
+        "tuna": "fish",
+        "bottlenose-dolphin": "dolphin",
+        "dolphin": "mammal"
+      },
+      "expectedMultipairTracks": 3,
+      "generate": "hierarchical-classification",
+      "media": [
+        {
+          "root": "generated",
+          "path": "hierarchical-classification/images"
+        }
+      ],
+      "data": [
+        {
+          "root": "generated",
+          "path": "hierarchical-classification/valid-three-level-forest.config.json"
+        },
+        {
+          "root": "generated",
+          "path": "hierarchical-classification/multipair-tracks.annotations.json"
+        }
+      ]
+    },
+    {
+      "name": "Hierarchical classification cycle",
+      "type": "image-sequence",
+      "fps": 1,
+      "expectedTrackCount": 3,
+      "generate": "hierarchical-classification",
+      "plantTypeHierarchy": {
+        "root": "generated",
+        "path": "hierarchical-classification/cycle.config.json"
+      },
+      "media": [
+        {
+          "root": "generated",
+          "path": "hierarchical-classification/images"
+        }
+      ],
+      "data": [
+        {
+          "root": "generated",
+          "path": "hierarchical-classification/multipair-tracks.annotations.json"
+        }
+      ]
+    },
+    {
+      "name": "Hierarchical classification not an object",
+      "type": "image-sequence",
+      "fps": 1,
+      "expectedTrackCount": 3,
+      "generate": "hierarchical-classification",
+      "plantTypeHierarchy": {
+        "root": "generated",
+        "path": "hierarchical-classification/array-not-object.config.json"
+      },
+      "media": [
+        {
+          "root": "generated",
+          "path": "hierarchical-classification/images"
+        }
+      ],
+      "data": [
+        {
+          "root": "generated",
+          "path": "hierarchical-classification/multipair-tracks.annotations.json"
+        }
+      ]
+    },
+    {
+      "name": "Synthetic multicam frame metadata",
+      "type": "image-sequence",
+      "subType": "stereo",
+      "fps": 1,
+      "generate": "multicam-frame-metadata",
+      "defaultDisplay": "port",
+      "cameraOrder": [
+        "port",
+        "starboard"
+      ],
+      "expectedFrameMetadataSources": 3,
+      "expectedFrameMetadataUniqueSources": 3,
+      "frameMetadata": [
+        {
+          "root": "generated",
+          "path": "multicam-frame-metadata/shared/frame-metadata.csv"
+        }
+      ],
+      "cameras": {
+        "port": {
+          "media": [
+            {
+              "root": "generated",
+              "path": "multicam-frame-metadata/port/images"
+            }
+          ],
+          "frameMetadata": [
+            {
+              "root": "generated",
+              "path": "multicam-frame-metadata/port/sidecar/frame_metadata.csv"
+            }
+          ]
+        },
+        "starboard": {
+          "media": [
+            {
+              "root": "generated",
+              "path": "multicam-frame-metadata/starboard/images"
+            }
+          ],
+          "frameMetadata": [
+            {
+              "root": "generated",
+              "path": "multicam-frame-metadata/starboard/sidecar/frame_metadata.csv"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
