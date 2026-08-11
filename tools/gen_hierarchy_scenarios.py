@@ -55,8 +55,13 @@ MALFORMED_HIERARCHIES = {
 TRACK_SPECS = [
     {
         "id": 1,
-        "pairs": [["juvenile-red-snapper", 0.6], ["red-snapper", 0.8], ["fish", 0.95]],
-        "origin": [10, 10],
+        # Keep the stored ancestor first: hierarchy resolution still displays the passing leaf.
+        "pairs": [["fish", 0.95], ["red-snapper", 0.8], ["juvenile-red-snapper", 0.6]],
+        # This region fully covers track 2 on every frame once it resolves to fish.
+        "origin": [100, 0],
+        "size": [160, 130],
+        "attributes": {"LeafTrackMarker": "juvenile-track"},
+        "feature_attributes": {"LeafDetectionMarker": "juvenile-detection"},
     },
     {
         "id": 2,
@@ -76,11 +81,13 @@ def build_tracks(frame_count: int) -> dict:
     tracks = {}
     for spec in TRACK_SPECS:
         left, top = spec["origin"]
+        width, height = spec.get("size", [100, 80])
         features = [
             {
                 "frame": frame,
-                "bounds": [left + frame * 12, top, left + frame * 12 + 100, top + 80],
+                "bounds": [left + frame * 12, top, left + frame * 12 + width, top + height],
                 "keyframe": True,
+                **({"attributes": spec["feature_attributes"]} if "feature_attributes" in spec else {}),
             }
             for frame in range(frame_count)
         ]
@@ -90,7 +97,7 @@ def build_tracks(frame_count: int) -> dict:
             "id": spec["id"],
             "features": features,
             "confidencePairs": spec["pairs"],
-            "attributes": {},
+            "attributes": spec.get("attributes", {}),
         }
     # version 2 selects the current schema; without it the importer expects the legacy trackId key.
     return {"tracks": tracks, "groups": {}, "version": 2}
@@ -133,7 +140,25 @@ def generate(root: Path = DEFAULT_ROOT, force: bool = False) -> Path:
             if source.is_file():
                 shutil.copy2(source, camera_images / source.name)
         write_json(multicam_root / f"{camera}-tracks.annotations.json", tracks)
-    write_json(root / "valid-three-level-forest.config.json", {"typeHierarchy": VALID_HIERARCHY})
+    write_json(root / "valid-three-level-forest.config.json", {
+        "typeHierarchy": VALID_HIERARCHY,
+        "attributes": {
+            "track_LeafTrackMarker": {
+                "belongs": "track",
+                "datatype": "text",
+                "values": [],
+                "name": "LeafTrackMarker",
+                "key": "track_LeafTrackMarker",
+            },
+            "detection_LeafDetectionMarker": {
+                "belongs": "detection",
+                "datatype": "text",
+                "values": [],
+                "name": "LeafDetectionMarker",
+                "key": "detection_LeafDetectionMarker",
+            },
+        },
+    })
     for name, hierarchy in MALFORMED_HIERARCHIES.items():
         write_json(root / f"{name}.config.json", {"typeHierarchy": hierarchy})
     return root
