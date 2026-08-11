@@ -161,6 +161,62 @@
       }
     },
     {
+      "name": "Hierarchical classification multicam divergent",
+      "type": "image-sequence",
+      "subType": "stereo",
+      "fps": 1,
+      "generate": "hierarchical-classification",
+      "defaultDisplay": "port",
+      "cameraOrder": [
+        "port",
+        "starboard"
+      ],
+      "expectedTrackCount": 3,
+      "expectedTypeHierarchy": {
+        "juvenile-red-snapper": "red-snapper",
+        "red-snapper": "fish",
+        "bluefin-tuna": "tuna",
+        "tuna": "fish",
+        "bottlenose-dolphin": "dolphin",
+        "dolphin": "mammal"
+      },
+      "expectedMultipairTracks": 3,
+      "plantTypeHierarchy": {
+        "root": "generated",
+        "path": "hierarchical-classification/valid-three-level-forest.config.json"
+      },
+      "cameras": {
+        "port": {
+          "media": [
+            {
+              "root": "generated",
+              "path": "hierarchical-classification/multicam/port/images"
+            }
+          ],
+          "data": [
+            {
+              "root": "generated",
+              "path": "hierarchical-classification/multicam/port-tracks.annotations.json"
+            }
+          ]
+        },
+        "starboard": {
+          "media": [
+            {
+              "root": "generated",
+              "path": "hierarchical-classification/multicam/starboard/images"
+            }
+          ],
+          "data": [
+            {
+              "root": "generated",
+              "path": "hierarchical-classification/multicam/starboard-tracks.annotations.json"
+            }
+          ]
+        }
+      }
+    },
+    {
       "name": "SEFSC-SEAMAP fish taxonomy",
       "type": "video",
       "fps": 5.0,

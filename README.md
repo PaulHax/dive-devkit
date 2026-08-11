@@ -60,6 +60,7 @@ failure. Default runs server unit/lint plus client unit/lint/builds. Flags: `--c
 | NOAA Okeanos fish video | video | `okeanos-media` |
 | NOAA Okeanos frame metadata sequence | image-sequence + frame metadata | `okeanos-media` |
 | Hierarchical classification (multipair, cycle, not-an-object) | image-sequence + tracks + type hierarchy | `hierarchical-classification` |
+| Hierarchical classification multicam divergent | stereo image-sequence + matching tracks with one divergent classification replica | `hierarchical-classification` |
 | Synthetic multicam frame metadata | stereo image-sequence + per-camera/shared frame metadata | `multicam-frame-metadata` |
 | SEFSC-SEAMAP fish taxonomy | video + 24 real tracks + 147-class type hierarchy | `sefsc-seamap` |
 

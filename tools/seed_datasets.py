@@ -331,6 +331,12 @@ def seed_multicam(
                 "cameras": camera_ids,
             },
         )
+        # The hierarchy belongs to the canonical multicamera parent.  A normal import would
+        # promote a child config.json, but the seed deliberately keeps the child payloads focused
+        # on their divergent annotation replicas.
+        plant = plant_path(entry)
+        if plant:
+            plant_type_hierarchy(gc, parent["_id"], plant)
     except Exception as e:  # noqa: BLE001
         return {"name": name, "status": "failed", "problems": [str(e)[:160]]}
     return {"name": name, "id": parent["_id"], "status": "created"}

@@ -12,6 +12,7 @@ Requires ffmpeg and network access on the first run; afterwards it is a no-op.
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import os
 import shutil
@@ -95,6 +96,19 @@ def build_tracks(frame_count: int) -> dict:
     return {"tracks": tracks, "groups": {}, "version": 2}
 
 
+def build_divergent_multicam_tracks(frame_count: int) -> tuple[dict, dict]:
+    """Return matching logical tracks with one deliberately divergent camera replica.
+
+    The port payload is the canonical first-camera view.  Starboard changes only track 2's
+    bluefin-tuna score, making the load warning and the subsequent repair-on-edit observable
+    without obscuring the hierarchy examples with different geometry or track IDs.
+    """
+    port = build_tracks(frame_count)
+    starboard = copy.deepcopy(port)
+    starboard["tracks"]["2"]["confidencePairs"][0][1] = 0.35
+    return port, starboard
+
+
 def write_json(path: Path, payload: object) -> None:
     path.write_text(json.dumps(payload, indent=2) + "\n")
 
@@ -103,11 +117,22 @@ def generate(root: Path = DEFAULT_ROOT, force: bool = False) -> Path:
     """Produce media + annotations + hierarchy payloads under `root`; returns `root`."""
     root.mkdir(parents=True, exist_ok=True)
     image_dir = root / "images"
-    if force and image_dir.exists():
-        shutil.rmtree(image_dir)
+    multicam_root = root / "multicam"
+    if force:
+        for directory in (image_dir, multicam_root):
+            if directory.exists():
+                shutil.rmtree(directory)
     okeanos_media.extract_frames(okeanos_media.ensure_source(), image_dir, FRAMES, FRAME_PATTERN)
 
     write_json(root / "multipair-tracks.annotations.json", build_tracks(len(FRAMES)))
+    port_tracks, starboard_tracks = build_divergent_multicam_tracks(len(FRAMES))
+    for camera, tracks in (("port", port_tracks), ("starboard", starboard_tracks)):
+        camera_images = multicam_root / camera / "images"
+        camera_images.mkdir(parents=True, exist_ok=True)
+        for source in image_dir.iterdir():
+            if source.is_file():
+                shutil.copy2(source, camera_images / source.name)
+        write_json(multicam_root / f"{camera}-tracks.annotations.json", tracks)
     write_json(root / "valid-three-level-forest.config.json", {"typeHierarchy": VALID_HIERARCHY})
     for name, hierarchy in MALFORMED_HIERARCHIES.items():
         write_json(root / f"{name}.config.json", {"typeHierarchy": hierarchy})
