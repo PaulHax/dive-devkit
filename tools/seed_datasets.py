@@ -52,6 +52,19 @@ def find_dataset(gc: GirderClient, parent_id: str, name: str) -> dict | None:
     return next(iter(gc.listFolder(parent_id, name=name)), None)
 
 
+def annotation_folder_id(gc: GirderClient, dataset_id: str, entry: dict) -> str | None:
+    """Return the canonical first configured folder that owns this entry's tracks."""
+    if "cameras" not in entry:
+        return dataset_id
+    cameras = entry["cameras"]
+    configured_order = [
+        name for name in entry.get("cameraOrder", []) if name in cameras
+    ]
+    camera_name = (configured_order or list(cameras))[0]
+    canonical_camera = find_dataset(gc, dataset_id, camera_name)
+    return None if canonical_camera is None else canonical_camera["_id"]
+
+
 def _png_chunk(kind: bytes, data: bytes) -> bytes:
     payload = kind + data
     return (
@@ -390,13 +403,17 @@ def seed_one(gc: GirderClient, parent_id: str, entry: dict, force: bool) -> dict
     return {"name": name, "id": folder["_id"], "status": "created", "job_ids": job_ids}
 
 
-def hierarchy_surface(gc: GirderClient, folder_id: str) -> tuple[dict, int] | None:
+def hierarchy_surface(
+    gc: GirderClient,
+    folder_id: str,
+    annotation_folder: str | None = None,
+) -> tuple[dict, int] | None:
     """Return the persisted hierarchy and count of tracks carrying multiple type pairs."""
     try:
         meta = gc.get(f"dive_dataset/{folder_id}")
         tracks = gc.get(
             "dive_annotation/track",
-            parameters={"folderId": folder_id, "limit": 0},
+            parameters={"folderId": annotation_folder or folder_id, "limit": 0},
         )
     except Exception:  # noqa: BLE001
         return None
@@ -447,16 +464,18 @@ def main() -> int:
             print(f"  {r['status']:9} {r['name'][:34]:34}  {'; '.join(r['problems'])}")
             continue
         ds_id = r["id"]
+        entry = by_name.get(r["name"], {})
+        track_folder_id = annotation_folder_id(gc, ds_id, entry)
         record[r["name"]] = {"id": ds_id, "viewer": f"{args.viewer_url}/#/viewer/{ds_id}"}
         note = ""
-        expected = by_name.get(r["name"], {}).get("expectedTrackCount")
+        expected = entry.get("expectedTrackCount")
         if expected is not None:
-            actual = track_count(gc, ds_id)
+            actual = None if track_folder_id is None else track_count(gc, track_folder_id)
             record[r["name"]]["tracks"] = actual
             verdict = "OK" if actual == expected else "MISMATCH"
             ok = ok and actual == expected
             note += f"  tracks={actual}/{expected} {verdict}"
-        expected_sources = by_name.get(r["name"], {}).get("expectedFrameMetadataSources")
+        expected_sources = entry.get("expectedFrameMetadataSources")
         if expected_sources is not None:
             counts = frame_metadata_source_counts(gc, ds_id)
             actual = None if counts is None else counts[0]
@@ -464,19 +483,19 @@ def main() -> int:
             verdict = "OK" if actual == expected_sources else "MISMATCH"
             ok = ok and actual == expected_sources
             note += f"  frame_metadata_sources={actual}/{expected_sources} {verdict}"
-            expected_unique = by_name.get(r["name"], {}).get("expectedFrameMetadataUniqueSources")
+            expected_unique = entry.get("expectedFrameMetadataUniqueSources")
             if expected_unique is not None:
                 unique_actual = None if counts is None else counts[1]
                 record[r["name"]]["frameMetadataUniqueSources"] = unique_actual
                 verdict = "OK" if unique_actual == expected_unique else "MISMATCH"
                 ok = ok and unique_actual == expected_unique
                 note += f"  unique_frame_metadata={unique_actual}/{expected_unique} {verdict}"
-        expected_hierarchy = by_name.get(r["name"], {}).get("expectedTypeHierarchy")
+        expected_hierarchy = entry.get("expectedTypeHierarchy")
         if expected_hierarchy is not None:
-            surface = hierarchy_surface(gc, ds_id)
+            surface = hierarchy_surface(gc, ds_id, track_folder_id)
             actual_hierarchy = None if surface is None else surface[0]
             actual_multipair = None if surface is None else surface[1]
-            expected_multipair = by_name[r["name"]].get("expectedMultipairTracks", 0)
+            expected_multipair = entry.get("expectedMultipairTracks", 0)
             record[r["name"]]["typeHierarchy"] = actual_hierarchy
             record[r["name"]]["multipairTracks"] = actual_multipair
             matches = (
@@ -486,7 +505,7 @@ def main() -> int:
             verdict = "OK" if matches else "MISMATCH"
             ok = ok and matches
             note += f"  hierarchy_surface={verdict}"
-        planted = plant_path(by_name.get(r["name"], {}))
+        planted = plant_path(entry)
         if planted is not None:
             expected_planted = json.loads(planted.read_text())["typeHierarchy"]
             actual_planted = gc.get(f"dive_dataset/{ds_id}").get("typeHierarchy")
