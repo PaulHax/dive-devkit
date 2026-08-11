@@ -40,7 +40,7 @@ motivating sample gets cut and a rejection test written instead. Reviewer test b
 
 ## Know what the default gate does NOT cover
 
-`dive-devkit/tools/test.sh <wt>` runs server unit/lint/type plus client unit/lint/builds.
+`dive-devkit/tools/test.sh <wt>` runs server unit/lint plus client unit/lint/builds.
 
 **Not covered — budget manual live-stack e2e for these:**
 

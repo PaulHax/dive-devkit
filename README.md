@@ -50,7 +50,7 @@ dive-devkit/tools/test.sh <worktree>        # full non-integration gate
 dive-devkit/tools/test.sh <worktree> --unit # quick server/client unit-only gate
 ```
 Runs every selected suite even if one fails, then prints a PASS/FAIL summary and exits non-zero on any
-failure. Default runs server unit/lint/type plus client unit/lint/builds. Flags: `--ci`, `--lint`,
+failure. Default runs server unit/lint plus client unit/lint/builds. Flags: `--ci`, `--lint`,
 `--build`, `--integration` (needs `GIRDER_API_KEY`), `--server-only`, `--client-only`,
 `--no-provision`. Auto-runs `uv sync` / `npm ci` if a worktree isn't provisioned yet.
 

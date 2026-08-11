@@ -66,7 +66,7 @@ existing test unchanged.
 
 ## What the default gate does not cover
 
-`dive-devkit/tools/test.sh <wt>` runs server unit/lint/type plus client unit/lint/builds. It does
+`dive-devkit/tools/test.sh <wt>` runs server unit/lint plus client unit/lint/builds. It does
 **not** cover: `pytest -m integration` (needs `GIRDER_API_KEY` and a live Girder), girder_worker task
 execution (`extract_zip`, `convert_video`, `convert_images`), real browser upload flows, or Electron
 IPC. Track "gates green, no live e2e" as a separate open item — green gates were repeatedly treated

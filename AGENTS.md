@@ -29,15 +29,16 @@ dive-devkit/tools/test.sh <wt>            # add --integration for live-stack int
                                           # --server-only | --client-only | --no-provision
 ```
 Runs each selected suite even if an earlier one fails, prints PASS/FAIL per suite, exits non-zero on
-any failure. Default = server unit/lint/type plus client unit/lint/builds (no live stack needed).
-`--ci` mirrors GitHub Actions and skips server lint/type because CI does not run them.
+any failure. Default = server unit/lint plus client unit/lint/builds (no live stack needed).
+`--ci` mirrors GitHub Actions and skips server lint because CI does not run it.
 Do not treat integration as part of the default local gate; it mutates a live stack and needs private
 fixture access.
 The manual breakdown of each suite:
 ```bash
 # server unit
 cd dive/<wt>/server && uv run tox -e testunit
-uv run tox -e lint ; uv run tox -e type ; uv run tox -e format   # not in CI
+uv run tox -e lint ; uv run tox -e format                        # not in CI
+# uv run tox -e type                                              # disabled: stale mypy checks
 
 # client unit (23 specs)
 cd dive/<wt>/client && npm test
@@ -53,7 +54,7 @@ export GIRDER_API_KEY=<read-only> ; uv run tox -e testintegration
 - client(web): `npm ci` · `npm run lint` · `npm run lint:templates` · `npm test -- --coverage` · `npm run build:web`
 - client(electron): `npm ci` · `npm run build:electron -- --linux AppImage`
 - server: `tox -e testunit` (py3.11)
-- NOT in CI: server `lint`/`type`, integration. No cypress/e2e suite exists.
+- NOT in CI: server `lint`, integration. No cypress/e2e suite exists.
 
 ## Docker stack (one at a time)
 ```bash

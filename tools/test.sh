@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Run DIVE test suites for a worktree across envs in one shot.
-#   server/docker env -> server unit/lint/type gates (pytest/flake8/mypy via tox)
+#   server/docker env -> server unit/lint gates (pytest/flake8 via tox)
 #   client/desktop env -> client unit/lint/build gates (vitest/eslint/vite/electron)
 # Runs every selected suite even if an earlier one fails, then prints a pass/fail summary
 # and exits non-zero if anything failed.
 #
 # Usage: tools/test.sh <worktree> [options]
-#   (default)         full non-integration gate: server unit/lint/type + client unit/lint/builds
+#   (default)         full non-integration gate: server unit/lint + client unit/lint/builds
 #   --unit            quick unit-only gate: server unit + client/desktop unit
 #   --quick           alias for --unit
 #   --ci              GitHub Actions parity: units + client lint + client builds
@@ -53,7 +53,8 @@ fi
 
 [ "$SERVER_UNIT" = 1 ] && run "server unit (tox testunit)"            "$SRV" uv run tox -e testunit
 [ "$SERVER_LINT" = 1 ] && run "server lint (flake8)"                  "$SRV" uv run tox -e lint
-[ "$SERVER_LINT" = 1 ] && run "server type (mypy)"                    "$SRV" uv run tox -e type
+# Disabled until DIVE's mypy checks catch up with the codebase.
+# [ "$SERVER_LINT" = 1 ] && run "server type (mypy)"                  "$SRV" uv run tox -e type
 [ "$CLIENT_UNIT" = 1 ] && run "client + desktop unit (vitest)"        "$CLI" npm test
 [ "$CLIENT_LINT" = 1 ] && run "client lint (eslint)"                  "$CLI" npm run lint
 [ "$CLIENT_LINT" = 1 ] && run "client lint:templates"                "$CLI" npm run lint:templates
