@@ -113,7 +113,44 @@ def build_divergent_multicam_tracks(frame_count: int) -> tuple[dict, dict]:
     port = build_tracks(frame_count)
     starboard = copy.deepcopy(port)
     starboard["tracks"]["2"]["confidencePairs"][0][1] = 0.35
+    port["tracks"]["4"] = {
+        "begin": 0,
+        "end": 0,
+        "id": 4,
+        "features": [{"frame": 0, "bounds": [20, 160, 80, 220], "keyframe": True}],
+        "confidencePairs": [["fish", 0.7]],
+        "attributes": {"camera": "port-target"},
+    }
+    starboard["tracks"]["5"] = {
+        "begin": 1,
+        "end": 1,
+        "id": 5,
+        "features": [{"frame": 1, "bounds": [320, 160, 390, 230], "keyframe": True}],
+        "confidencePairs": [["mammal", 0.8]],
+        "attributes": {"camera": "starboard-source"},
+    }
     return port, starboard
+
+
+def empty_confidence_pairs_kwcoco() -> dict:
+    return {
+        "info": {"dive_extensions": ["dive_confidence_pairs"]},
+        "images": [{"id": 1, "file_name": FRAME_PATTERN % 0, "frame_index": 0}],
+        "annotations": [{
+            "id": 1,
+            "image_id": 1,
+            "category_id": 1,
+            "track_id": 7,
+            "bbox": [20, 20, 80, 60],
+            "score": 0.3,
+            "prob": [0.2, 0.8],
+            "dive_confidence_pairs": [],
+        }],
+        "categories": [
+            {"id": 1, "name": "fish"},
+            {"id": 2, "name": "shark"},
+        ],
+    }
 
 
 def write_json(path: Path, payload: object) -> None:
@@ -132,6 +169,7 @@ def generate(root: Path = DEFAULT_ROOT, force: bool = False) -> Path:
     okeanos_media.extract_frames(okeanos_media.ensure_source(), image_dir, FRAMES, FRAME_PATTERN)
 
     write_json(root / "multipair-tracks.annotations.json", build_tracks(len(FRAMES)))
+    write_json(root / "empty-confidence-pairs.kwcoco.json", empty_confidence_pairs_kwcoco())
     port_tracks, starboard_tracks = build_divergent_multicam_tracks(len(FRAMES))
     for camera, tracks in (("port", port_tracks), ("starboard", starboard_tracks)):
         camera_images = multicam_root / camera / "images"

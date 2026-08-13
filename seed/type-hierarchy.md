@@ -2,6 +2,9 @@
 
 Covers the `sefsc-seamap` and `hierarchical-classification` seed entries.
 
+The hierarchical-classification generator also emits an empty `dive_confidence_pairs` KWCOCO
+fixture and a multicamera source-only/target-only merge pair for the companion manual walkthrough.
+
 ## Static data, not generated
 `seed/seamap-taxonomy.json` (147 classes) and `seed/sefsc-seamap-hierarchy.json` are checked in.
 They are derived from the public VIAME SEFSC-SEAMAP add-on by `tools/derive_seamap_taxonomy.py`,

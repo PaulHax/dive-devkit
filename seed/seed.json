@@ -171,7 +171,7 @@
         "port",
         "starboard"
       ],
-      "expectedTrackCount": 3,
+      "expectedTrackCount": 4,
       "expectedTypeHierarchy": {
         "juvenile-red-snapper": "red-snapper",
         "red-snapper": "fish",
