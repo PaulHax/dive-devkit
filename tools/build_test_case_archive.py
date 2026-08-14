@@ -17,6 +17,7 @@ import zipfile
 from pathlib import Path
 
 import gen_hierarchy_scenarios
+import sefsc_seamap
 
 KIT = Path(__file__).resolve().parents[1]
 CASE_CATALOG = KIT / "test-cases"
@@ -133,7 +134,12 @@ def copy_multicam_inputs(scenario_root: Path, destination: Path) -> None:
     )
 
 
-def populate_case(relative: str, scenario_root: Path, output_dir: Path) -> None:
+def populate_case(
+    relative: str,
+    scenario_root: Path,
+    output_dir: Path,
+    force_media: bool,
+) -> None:
     destination = output_dir / relative
     if relative == "classification/single-camera-linked-types":
         copy_file(
@@ -151,6 +157,18 @@ def populate_case(relative: str, scenario_root: Path, output_dir: Path) -> None:
         copy_file(
             scenario_root / "valid-three-level-forest.config.json",
             destination / "type-hierarchy.config.json",
+        )
+    elif relative == "classification/sefsc-seamap-fish-taxonomy":
+        source = sefsc_seamap.generate(force=force_media)
+        for name in (
+            sefsc_seamap.VIDEO_NAME,
+            "annotations.viame.csv",
+            "config.json",
+        ):
+            copy_file(source / name, destination / name)
+        copy_file(
+            KIT / "seed" / "seamap-taxonomy.json",
+            destination / "seamap-taxonomy.reference.json",
         )
     elif relative == "coco/rle-mask-warning-aggregation":
         write_json(destination / "rle-warning-fish.coco.json", warning_coco(1, "fish"))
@@ -253,7 +271,7 @@ def build_archive(
 
     for relative in manifest["cases"]:
         shutil.copytree(CASE_CATALOG / relative, output_dir / relative)
-        populate_case(relative, scenario_root, output_dir)
+        populate_case(relative, scenario_root, output_dir, force_media)
 
     media = set(manifest["media"])
     if "image-sequence" in media:

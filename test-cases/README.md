@@ -15,6 +15,7 @@ are synthetic.
 | --- | --- |
 | `classification/single-camera-linked-types` | One camera imports and preserves valid hierarchy data. |
 | `classification/multicamera-linked-types` | Matching camera tracks import and preserve equal hierarchy data. |
+| `classification/sefsc-seamap-fish-taxonomy` | A public video imports 24 real tracks and the observed SEAMAP hierarchy. |
 | `coco/rle-mask-warning-aggregation` | More than one COCO input produces an unsupported-mask warning. |
 | `clone/single-camera-metadata-isolation` | A soft clone has metadata that is independent from its source. |
 | `hierarchy/valid-three-level-forest` | A valid hierarchy resolves complete confidence vectors. |

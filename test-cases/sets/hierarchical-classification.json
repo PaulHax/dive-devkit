@@ -11,6 +11,7 @@
   "cases": [
     "classification/single-camera-linked-types",
     "classification/multicamera-linked-types",
+    "classification/sefsc-seamap-fish-taxonomy",
     "coco/rle-mask-warning-aggregation",
     "clone/single-camera-metadata-isolation",
     "hierarchy/valid-three-level-forest",
