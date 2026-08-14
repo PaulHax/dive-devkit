@@ -15,6 +15,7 @@ dive-devkit/
   LICENSE                # MIT
   .gitignore
   seed/seed.json         # datasets to seed (generator, media paths, frame metadata, expectations)
+  test-cases/            # durable, domain-organized manual test-case catalog
   skills/                # issue catalogs mined from real DIVE review cycles, progressively disclosed:
                          #   a short SKILL.md index linking to per-topic reference files.
                          #   dive-feature-planning  — seams and plan omissions, by surface
@@ -24,12 +25,26 @@ dive-devkit/
     seed_datasets.py     # idempotent, self-verifying seeder
     okeanos_media.py     # fetches the CC0 source clip; builds the video + frame-metadata surface
     gen_hierarchy_scenarios.py   # type-hierarchy scenarios cut from the same clip
+    build_test_case_archive.py  # build a selected set of domain test cases as a ZIP
     up.sh                # one-shot: stack up → wait → seed
     test.sh              # one-shot: run all test envs (server/docker + client/desktop) with a summary
     down.sh              # tear down stack (+ optional worktree removal)
 ```
 Generated media lands under `.generated/` (gitignored; override with `DIVE_DEVKIT_GENERATED`), built
 once on the first seed and reused after that.
+
+Build the classification test data without a running DIVE stack:
+
+```bash
+python3 tools/build_test_case_archive.py \
+  --manifest test-cases/sets/hierarchical-classification.json
+```
+
+The command reads a checked-in set manifest, copies its cases from the `test-cases/` catalog, and
+adds generated inputs. It creates an inspectable directory and a ZIP under `.generated/test-data/`.
+The hierarchical-classification set includes baseline single-camera and multicamera datasets,
+failure inputs, expected results, shared CC0 images, and SHA-256 checksums. Generated media and ZIP
+bytes remain untracked.
 
 ## Quickstart
 ```bash

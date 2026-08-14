@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "hierarchical-classification",
+  "title": "DIVE hierarchical classification",
+  "archiveRoot": "dive-classification-test-data",
+  "outputName": "classification",
+  "media": [
+    "image-sequence",
+    "multicamera"
+  ],
+  "cases": [
+    "classification/single-camera-linked-types",
+    "classification/multicamera-linked-types",
+    "coco/rle-mask-warning-aggregation",
+    "clone/single-camera-metadata-isolation",
+    "hierarchy/valid-three-level-forest",
+    "hierarchy/invalid-configurations",
+    "multicamera/divergent-classification-replicas",
+    "multicamera/disjoint-track-merge",
+    "kwcoco/exact-confidence-pairs-round-trip",
+    "kwcoco/empty-confidence-pairs-extension",
+    "display/resolved-attribute-filters",
+    "display/resolved-suppression-regions",
+    "export/raw-confidence-pair-filtering"
+  ]
+}
