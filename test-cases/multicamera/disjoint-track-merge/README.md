@@ -1,18 +1,11 @@
-# Multicamera merge with disjoint target and source tracks
+# Disjoint multicamera tracks
 
-## Condition
+## Contents
 
-Port contains target track 4 at frame 0. Starboard contains source track 5 at frame 1. The other
-camera does not initially contain the corresponding track.
+Port contains track 4 at frame 0 with `camera = port-target`. Starboard contains track 5 at frame 1
+with `camera = starboard-source`. The other camera does not contain the corresponding track.
 
-## Procedure
+## Data invariant
 
-Create a multicamera dataset from `media/multicamera`. Import the matching camera annotation files
-and `three-level-forest.config.json`. Merge track 5 into track 4.
-
-## Expected behavior
-
-Track 4 exists in both cameras after the merge. Port keeps its frame-0 observation and
-`camera = port-target`. Starboard keeps the former track-5 frame-1 observation and
-`camera = starboard-source`. Both vectors contain `fish: 0.7` and `mammal: 0.8`. Track 5 is absent
-after save and reload.
+Track 4 stores `fish: 0.7`, and track 5 stores `mammal: 0.8`. The observations and attributes are
+camera-local, while the two confidence vectors are complementary.

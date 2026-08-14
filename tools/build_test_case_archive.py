@@ -264,7 +264,8 @@ def build_archive(
     archive_readme = (
         f"# {manifest['title']} test data\n\n"
         "`MANIFEST.json` lists the long-lived test cases in this archive. Each case directory "
-        "contains its condition, procedure, expected behavior, and generated inputs.\n"
+        "describes its contents and data invariants. The PR descriptions contain temporary "
+        "review procedures.\n"
     )
     write_text(output_dir / "README.md", archive_readme)
     write_json(output_dir / "MANIFEST.json", manifest)

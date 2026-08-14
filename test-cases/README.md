@@ -6,8 +6,9 @@ describe the input condition or the invariant under test.
 ## Media provenance
 
 The generated JPEG images come from NOAA Okeanos Explorer EX1402 dive 11. Wikimedia Commons
-distributes the source clip as CC0 1.0 public-domain media. All annotations and configuration files
-are synthetic.
+distributes the source clip as CC0 1.0 public-domain media. Their annotations and configurations
+are synthetic. The SEFSC-SEAMAP fixture contains real FishTrack23 media and annotations under CC BY
+4.0; its directory contains the attribution details.
 
 ## Directory map
 

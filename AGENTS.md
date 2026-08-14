@@ -94,7 +94,7 @@ Every seed entry names one in `"generate"`, and all paths are `{"root": "generat
 - `hierarchical-classification` — `tools/gen_hierarchy_scenarios.py`. Cuts 8 frames from the same
   clip via `okeanos_media`, and writes made-up multipair tracks plus one hierarchy payload per
   branch of the normalizer (valid forest + 6 malformed).
-- `test-cases/` is the checked-in, domain-organized catalog for manual classification cases. Set
+- `test-cases/` is the checked-in, domain-organized classification fixture catalog. Set
   manifests select cases without changing the long-lived fixtures. `tools/build_test_case_archive.py`
   adds generated inputs, CC0 media, checksums, and a ZIP under `.generated/test-data/`. The
   generated directory and ZIP are not checked in.

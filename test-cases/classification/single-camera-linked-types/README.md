@@ -1,20 +1,15 @@
 # Single-camera classification with linked types
 
-## Condition
+## Contents
 
-One image sequence has three tracks. Each track has confidence values for a leaf type and its parent
-types in a valid hierarchy.
+`tracks.annotations.json` contains three tracks on eight frames. Each track stores confidence pairs
+for a leaf type and its ancestors.
 
-## Procedure
+`type-hierarchy.config.json` contains three taxonomy branches and the track and detection attribute
+definitions used by related fixtures.
 
-1. Create an image-sequence dataset from `media/image-sequence`.
-2. Import `tracks.annotations.json`.
-3. Import `type-hierarchy.config.json` as DIVE Configuration JSON.
-4. Open the dataset, play all frames, and reload the dataset.
-5. Export the annotations as DIVE JSON.
+## Data invariant
 
-## Expected behavior
-
-The dataset opens without an import or hierarchy warning. It has three tracks on all eight frames.
-The displayed types are `juvenile-red-snapper`, `bluefin-tuna`, and `bottlenose-dolphin`. Reload and
-export preserve each stored confidence pair.
+The stored pair order is intentional. Track 1 stores `fish` first but has
+`juvenile-red-snapper` as its deepest passing type. Tracks 2 and 3 cover the tuna and dolphin
+branches.

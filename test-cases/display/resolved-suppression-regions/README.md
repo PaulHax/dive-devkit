@@ -1,12 +1,11 @@
 # Suppression regions on resolved types
 
-## Condition
+## Contents
 
-Track 1 fully covers track 2 on every frame. Track 1 stores `fish` first, but normally resolves to
-`juvenile-red-snapper`.
+The fixture contains the three-track hierarchy baseline. Track 1 fully covers track 2 on every
+frame.
 
-## Expected behavior
+## Data invariant
 
-A `fish` suppression region does not activate while track 1 resolves to the leaf. Unchecking
-`juvenile-red-snapper` and `red-snapper` makes track 1 resolve to `fish`. Track 2 then disappears
-from the canvas, list, and counts without a reload. Rechecking both types restores track 2.
+Track 1 stores `fish` first but resolves to `juvenile-red-snapper` under the default state. Its
+geometry makes suppression changes visible without changing detections.

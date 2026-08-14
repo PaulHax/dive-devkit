@@ -1,12 +1,10 @@
-# Filtered export of raw confidence pairs
+# Raw confidence-pair filtering
 
-## Procedure
+## Contents
 
-Create the baseline from `media/image-sequence`, `multipair.annotations.json`, and
-`three-level-forest.config.json`. Change the checked type set, then export with Checked Types Only.
+The fixture contains three tracks with full confidence vectors and a three-branch hierarchy.
 
-## Expected behavior
+## Data invariant
 
-Export compares checked names with raw stored pair names. Checked raw pairs remain even when they
-are not the resolved display type. Unchecked raw pairs are absent. Export filtering does not change
-the stored tracks.
+Track 1 stores `fish`, `red-snapper`, and `juvenile-red-snapper` while displaying the leaf under
+the default state. This separates raw pair membership from resolved display identity.

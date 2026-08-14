@@ -1,12 +1,11 @@
 # Invalid type hierarchy configurations
 
-## Inputs
+## Contents
 
-The files cover a cycle, a non-object value, an empty child, an empty parent, a non-string parent,
-and a self-edge.
+The directory contains one configuration for each rejected shape: a cycle, a non-object value, an
+empty child, an empty parent, a non-string parent, and a self-edge.
 
-## Expected behavior
+## Data invariant
 
-A normal configuration import rejects each file without changing the stored hierarchy. Testing a
-corrupt value that is already at rest requires `plant_type_hierarchy.py`, because supported DIVE
-write paths reject these values before storage.
+Each file isolates one normalization failure. Supported DIVE write paths reject these values before
+storage; `plant_type_hierarchy.py` remains available for corrupt-at-rest scenarios.

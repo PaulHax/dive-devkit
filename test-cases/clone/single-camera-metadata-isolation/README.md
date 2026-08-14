@@ -1,23 +1,12 @@
 # Single-camera soft-clone metadata isolation
 
-## Condition
+## Contents
 
-A source dataset has nested metadata and a type hierarchy. DIVE creates a single-camera soft clone
-from that source.
+`source.annotations.json` contains the three-track single-camera baseline. `source.config.json`
+contains its hierarchy and nested configuration data. `clone-replacement.config.json` contains a
+smaller replacement hierarchy.
 
-## Procedure
+## Data invariant
 
-1. Create an image-sequence dataset from `media/image-sequence`.
-2. Import `source.annotations.json` and `source.config.json`.
-3. Create a single-camera soft clone.
-4. Import `clone-replacement.config.json` into the clone.
-5. Reopen the source dataset.
-
-## Expected behavior
-
-The source keeps its original hierarchy. Source and clone metadata are independent objects. A
-nested change in one object does not change the other object.
-
-Stored data supplies a user-level smoke test. The exact object-identity check uses the
-`createSoftClone` server entry point because the user interface does not expose both live Girder
-folder objects.
+The source and replacement configurations differ below the top metadata object. This makes a
+shared nested object distinguishable from an independent metadata copy.

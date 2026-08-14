@@ -15,7 +15,7 @@ dive-devkit/
   LICENSE                # MIT
   .gitignore
   seed/seed.json         # datasets to seed (generator, media paths, frame metadata, expectations)
-  test-cases/            # durable, domain-organized manual test-case catalog
+  test-cases/            # durable, domain-organized fixture catalog
   skills/                # issue catalogs mined from real DIVE review cycles, progressively disclosed:
                          #   a short SKILL.md index linking to per-topic reference files.
                          #   dive-feature-planning  — seams and plan omissions, by surface
